@@ -63,7 +63,7 @@ enum {
 
 class MainWindow : public BWindow, public Observer {
 public:
-	MainWindow(BRect frame, BString lastFile);
+	MainWindow(BRect frame, BPath lastFile);
 	~MainWindow(void);
 
 	void OpenAbout(void);
@@ -78,7 +78,7 @@ private:
 	void CreateTransfer(BMessage* msg);
 
 	RegisterView* fRegisterView;
-	BFilePanel *fImportPanel, *fExportPanel;
+	BFilePanel *fNewPanel, *fOpenPanel, *fImportPanel, *fExportPanel;
 
 	BString fLastFile;
 	BMenuItem* fAccountClosedItem;

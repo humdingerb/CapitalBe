@@ -4,6 +4,8 @@
 #include <Application.h>
 #include <Message.h>
 
+#include "MainWindow.h"
+
 #define M_QUIT_NOW 'qnow'
 
 class App : public BApplication {
@@ -17,6 +19,9 @@ public:
 
 private:
 	void ShowAlert(BString text);
+	void ShowMainWindow(BPath path);
+
+	MainWindow* fMainWindow;
 };
 
 
