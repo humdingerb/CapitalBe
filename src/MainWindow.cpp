@@ -47,14 +47,12 @@
 #define B_SERVICES_DAEMON_RESTART 'SDRS'
 
 
-MainWindow::MainWindow(BRect frame)
-	: BWindow(frame, "", B_DOCUMENT_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS)
+MainWindow::MainWindow(BRect frame, BString lastFile)
+	: BWindow(frame, B_TRANSLATE_SYSTEM_NAME("CapitalBe"), B_DOCUMENT_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS),
+	fLastFile(lastFile)
 {
-	BString temp;
-	SetTitle(B_TRANSLATE_SYSTEM_NAME("CapitalBe"));
-
-	fLoadError = false;
-	InitSettings();
+	if (gPreferences.FindColor("negativecolor", &gNegativeColor) != B_OK)
+		gNegativeColor = ui_color(B_FAILURE_COLOR);
 
 	AddShortcut(B_HOME, B_COMMAND_KEY, new BMessage(M_FIRST_TRANSACTION));
 	AddShortcut(B_END, B_COMMAND_KEY, new BMessage(M_LAST_TRANSACTION));
@@ -160,7 +158,8 @@ MainWindow::MainWindow(BRect frame)
 
 	fImportPanel = new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL, B_FILE_NODE, false,
 		new BMessage(M_IMPORT_ACCOUNT));
-	temp = B_TRANSLATE_SYSTEM_NAME("CapitalBe");
+
+	BString temp = B_TRANSLATE_SYSTEM_NAME("CapitalBe");
 	temp << ": " << B_TRANSLATE("Import");
 	fImportPanel->Window()->SetTitle(temp.String());
 	fExportPanel = new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL, B_FILE_NODE, false,
@@ -204,26 +203,13 @@ MainWindow::QuitRequested(void)
 	prefsLock.Lock();
 	gPreferences.RemoveData("mainframe");
 	gPreferences.AddRect("mainframe", Frame());
+	gPreferences.RemoveData("lastfile");
+	gPreferences.AddString("lastfile", fLastFile);
 	prefsLock.Unlock();
 
 	be_app->PostMessage(B_QUIT_REQUESTED);
 	return true;
 }
-
-void
-MainWindow::InitSettings(void)
-{
-	// This loads all the settings from disk and uses sane defaults if a setting
-	// is non-existent or invalid
-	if (gPreferences.FindString("lastfile", &fLastFile) != B_OK) {
-		fLastFile = gSettingsPath.Path();
-		fLastFile << "/MyAccountData";
-	}
-
-	if (gPreferences.FindColor("negativecolor", &gNegativeColor) != B_OK)
-		gNegativeColor = ui_color(B_FAILURE_COLOR);
-}
-
 
 void
 MainWindow::MessageReceived(BMessage* msg)
@@ -635,8 +621,6 @@ MainWindow::LoadData(void)
 	if (gDatabase.OpenFile(fLastFile.String()) != B_OK) {
 		BEntry entry(fLastFile.String());
 		if (!entry.Exists()) {
-			// TODO: Show CapitalBe introduction
-			// TODO: Show a Create File dialog
 			gDatabase.CreateFile(fLastFile.String());
 			PostMessage(M_SHOW_NEW_ACCOUNT);
 		}

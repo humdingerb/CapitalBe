@@ -63,7 +63,7 @@ enum {
 
 class MainWindow : public BWindow, public Observer {
 public:
-	MainWindow(BRect frame);
+	MainWindow(BRect frame, BString lastFile);
 	~MainWindow(void);
 
 	void OpenAbout(void);
@@ -72,7 +72,6 @@ public:
 	void HandleNotify(const uint64& value, const BMessage* msg);
 
 private:
-	void InitSettings(void);
 	void LoadData(void);
 	void SaveData(void);
 
@@ -84,8 +83,6 @@ private:
 	BString fLastFile;
 	BMenuItem* fAccountClosedItem;
 	BMessageRunner* fRunner;
-
-	bool fLoadError;
 };
 
 #endif
