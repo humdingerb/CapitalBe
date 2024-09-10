@@ -83,6 +83,9 @@ App::MessageReceived(BMessage* msg)
 				&& msg->FindString("name", &name) == B_OK) {
 				BDirectory directory(&ref);
 				BPath path(&directory, name);
+				BEntry entry(path.Path());
+				if (entry.Exists())
+					entry.Remove();
 				ShowMainWindow(path);
 			}
 		} break;
