@@ -62,6 +62,10 @@
 #define DEFAULT_RECT BRect(0, 0, 450, 75)
 #define max(LHS, RHS) ((LHS) > (RHS) ? (LHS) : (RHS))
 
+
+namespace CapitalBe {
+
+
 // Globals ---------------------------------------------------------------------
 static const unsigned int kAlertButtonMsg = 'ALTB';
 static const int kSemTimeOut = 50000;
@@ -720,3 +724,6 @@ _DAlertFilter_::Filter(BMessage* msg, BHandler** target)
 
 	return B_DISPATCH_MESSAGE;
 }
+
+
+}  // namespace CapitalBe
